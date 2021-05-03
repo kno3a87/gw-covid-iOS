@@ -11,13 +11,12 @@ struct GameView: View {
     @ObservedObject var viewModel = GameViewModel()
     
     @State var point: Int = 0
-    @State var yuriko: String = "yuriko-back"
     // 今日の日付（Date()）にDateComponents(second: 31)を追加
     let time = Calendar.current.date(byAdding: DateComponents(second: 31), to: Date())!
     var body: some View {
         VStack {
             HStack(alignment: .center) {
-                Image(getYuriko())
+                Image(viewModel.getYuriko())
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150, alignment: .center)
@@ -64,18 +63,6 @@ struct GameView: View {
             }
             .padding(.bottom, 100)
         }
-    }
-    
-    func getYuriko() -> String {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            let turn = Bool.random()
-            if turn {
-                yuriko = "yuriko-front"
-            } else {
-                yuriko = "yuriko-back"
-            }
-        }
-        return yuriko
     }
 }
 
