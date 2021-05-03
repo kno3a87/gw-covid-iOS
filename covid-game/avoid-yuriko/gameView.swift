@@ -9,11 +9,8 @@ import SwiftUI
 
 struct GameView: View {
     @ObservedObject var viewModel = GameViewModel()
-    
     @State var gameData = GameData()
     
-    // 今日の日付（Date()）にDateComponents(second: 31)を追加
-    let time = Calendar.current.date(byAdding: DateComponents(second: 31), to: Date())!
     var body: some View {
         ZStack(alignment: .center) {
             VStack {
@@ -37,7 +34,7 @@ struct GameView: View {
                                 .scaledToFit()
                                 .frame(width: 50, height: 50, alignment: .center)
                             // style: .timerでカウントダウン表示に
-                            Text(time, style: .timer)
+                            Text(gameData.time, style: .timer)
                             // TODO: timeが0になったら終わりの表示
                         }
                     }
