@@ -8,8 +8,8 @@
 import Foundation
 
 struct GameData: Codable {
-    // 今日の日付（Date()）にDateComponents(second: 31)を追加
-    var time = Calendar.current.date(byAdding: DateComponents(second: 31), to: Date())!
+    var start: Bool = true
+    var time: Int = 10
     var point: Int = 0
     // flagがtrueだと罰
     var flag: Bool = false

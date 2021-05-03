@@ -10,9 +10,23 @@ import SwiftUI
 struct GameView: View {
     @ObservedObject var viewModel = GameViewModel()
     @State var gameData = GameData()
-    
+    @State var timer: Timer?
+       
     var body: some View {
         ZStack(alignment: .center) {
+            if gameData.start {
+                Button(action: {
+                    gameData.start = false
+                    self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true){_ in
+                        gameData.time -= 1
+                    }
+                }) {
+                Image("start")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300, alignment: .center)
+                }
+            }
             VStack {
                 HStack(alignment: .center) {
                     Image(viewModel.getYuriko())
@@ -33,9 +47,7 @@ struct GameView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50, alignment: .center)
-                            // style: .timerでカウントダウン表示に
-                            Text(gameData.time, style: .timer)
-                            // TODO: timeが0になったら終わりの表示
+                            Text("0:" + String(format: "%02d", gameData.time))
                         }
                     }
                     .padding(.trailing, 50)
@@ -74,6 +86,13 @@ struct GameView: View {
             }
             if gameData.flag {
                 Image("batsu")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300, alignment: .center)
+                    .padding(.top, 100)
+            }
+            if gameData.time == 0 {
+                Image("timeup")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 300, height: 300, alignment: .center)
