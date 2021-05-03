@@ -96,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				55A6A381263F912600129EBB /* covid_gameApp.swift */,
-				55A6A383263F912600129EBB /* ContentView.swift */,
+				55A6A3AF263F930100129EBB /* avoid-yuriko */,
 				55A6A385263F912C00129EBB /* Assets.xcassets */,
 				55A6A38A263F912C00129EBB /* Info.plist */,
 				55A6A387263F912C00129EBB /* Preview Content */,
@@ -128,6 +128,14 @@
 				55A6A3A0263F912C00129EBB /* Info.plist */,
 			);
 			path = "covid-gameUITests";
+			sourceTree = "<group>";
+		};
+		55A6A3AF263F930100129EBB /* avoid-yuriko */ = {
+			isa = PBXGroup;
+			children = (
+				55A6A383263F912600129EBB /* ContentView.swift */,
+			);
+			path = "avoid-yuriko";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
