@@ -60,8 +60,10 @@ struct GameView: View {
                             gameData.point += 200
                         } else {
                             gameData.flag = true
+                            gameData.buttonFlag = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                 gameData.flag = false
+                                gameData.buttonFlag = false
                             }
                         }
                     }) {
@@ -71,7 +73,7 @@ struct GameView: View {
                         .frame(width: 100, height: 100, alignment: .center)
                     }
                     // 罰の間はボタンを押せなくする
-                    .disabled(gameData.flag)
+                    .disabled(gameData.buttonFlag)
                     Button(action: {
                         gameData.point += 100
                     }) {
@@ -80,7 +82,7 @@ struct GameView: View {
                         .scaledToFit()
                         .frame(width: 100, height: 100, alignment: .center)
                     }
-                    .disabled(gameData.flag)
+                    .disabled(gameData.buttonFlag)
                 }
                 .padding(.bottom, 100)
             }
@@ -97,6 +99,11 @@ struct GameView: View {
                     .scaledToFit()
                     .frame(width: 300, height: 300, alignment: .center)
                     .padding(.top, 100)
+                    .onAppear{
+                        gameData.buttonFlag = true
+                        // カウントダウン止める
+                        self.timer?.invalidate()
+                    }
             }
         }
     }
