@@ -9,5 +9,6 @@ import Foundation
 
 struct GameData: Codable {
     var point: Int = 0
+    // flagがtrueだと罰
     var flag: Bool = false
 }

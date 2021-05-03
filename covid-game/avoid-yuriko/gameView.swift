@@ -51,6 +51,9 @@ struct GameView: View {
                             gameData.point += 200
                         } else {
                             gameData.flag = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                                gameData.flag = false
+                            }
                         }
                     }) {
                     Image("alcohol")
