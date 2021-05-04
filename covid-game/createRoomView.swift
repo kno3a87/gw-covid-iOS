@@ -70,53 +70,38 @@ class RoomLoader: ObservableObject {
     func call() {
         print("Heroku呼び出し！")
         let url = URL(string: "https://gw-covid-server.herokuapp.com/room")!
-//        var urlRequest = URLRequest(url: url)
-        // TODO: http methodにGETを指定
-//        urlRequest.httpMethod = "POST"
-        // TODO: headerに"Accept: application/vnd.github.v3+json"を指定
-//        urlRequest.allHTTPHeaderFields = []
         
-//        let roomPublisher = URLSession.shared.dataTaskPublisher(for: url)
-//            .tryMap() { element -> Data in
-//                guard let httpResponse = element.response as? HTTPURLResponse,
-//                    httpResponse.statusCode == 200 else {
-//                        throw URLError(.badServerResponse)
-//                    }
-//                return element.data
-//                }
-//            .decode(type: [User].self, decoder: JSONDecoder())
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data {
-                let decoder = JSONDecoder()
-                guard let decodedData = try? decoder.decode(User.self, from: data) else {
-                    print("Json decode エラー")
-                    print(data)
-//                    print(response)
-                    print(String(bytes: data, encoding: .utf8)!)
-                    return
-                }
-                print(decodedData)
-            } else {
-                print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
+        var request = URLRequest(url: url)
+        // POSTを指定
+        request.httpMethod = "POST"
+        // POSTするデータをBodyとして設定
+//        request.httpBody = "os=iOS&version=11&language=日本語".data(using: .utf8)
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                // HTTPヘッダの取得
+                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
+                // HTTPステータスコード
+                print("statusCode: \(response.statusCode)")
+                print(String(data: data, encoding: .utf8) ?? "")
             }
         }.resume()
-
-//        roomPublisher
-//            // ちゃんとmainスレッドで受け取るよって指定してあげないとエラー
-//            .receive(on: DispatchQueue.main)
-//            .sink(receiveCompletion: { [weak self] completion in
-//                switch completion {
-//                case .failure(let error):
-//                    self?.err = error
-//                    print("Error: \(error)")
-//                case .finished: print("Finished")
+        
+        
+//        URLSession.shared.dataTask(with: url) { data, response, error in
+//            if let data = data {
+//                let decoder = JSONDecoder()
+//                guard let decodedData = try? decoder.decode(User.self, from: data) else {
+//                    print("Json decode エラー")
+//                    print(data)
+//                    print(String(bytes: data, encoding: .utf8)!)
+//                    return
 //                }
-//                self?.loading = false
-//            }, receiveValue: { [weak self] user in
-//                self?.user = user
+//                print(decodedData)
+//            } else {
+//                print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
 //            }
-//            ).store(in: &cancellables)
+//        }.resume()
     }
 }
 
