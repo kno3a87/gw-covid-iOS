@@ -11,6 +11,7 @@ import Combine
 struct createRoomView: View {
     @State private var showCopyAlert = false
     @State private var startFlag = false
+    let user: User
 
     var body: some View {
         ZStack {
@@ -25,7 +26,7 @@ struct createRoomView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 350, height: 200, alignment: .center)
-                    Text("ababa")
+                    Text(verbatim: user.room_id)
                         .frame(width: 200, height: 100, alignment: .bottom)
                 }
                 Button(action: {
@@ -60,41 +61,8 @@ struct createRoomView: View {
     }
 }
 
-class RoomLoader: ObservableObject {
-    private var cancellables = Set<AnyCancellable>()
-    @Published private(set) var user = [User]()
-    
-    func call() {
-        print("Heroku呼び出し！")
-        let url = URL(string: "https://gw-covid-server.herokuapp.com/room")!
-        var request = URLRequest(url: url)
-        // POSTを指定
-        request.httpMethod = "POST"
-        // POSTするデータをBodyとして設定
-//        request.httpBody = "os=iOS&version=11&language=日本語".data(using: .utf8)
-        let session = URLSession.shared
-        session.dataTask(with: request) { (data, response, error) in
-            if error == nil, let data = data, let response = response as? HTTPURLResponse {
-                // HTTPステータスコード
-                print("statusCode: \(response.statusCode)")
-                // 送られてきたdata
-                print(String(data: data, encoding: .utf8) ?? "")
-                // JSONからUserに
-                let decoder = JSONDecoder()
-                guard let user = try? decoder.decode(User.self, from: data) else {
-                    print("Json decode エラー")
-                    return
-                }
-                print(user.room_id)
-                print(user.user_id)
-            }
-        }.resume()
-        
-    }
-}
-
 struct createRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        createRoomView()
+        createRoomView(user: User(room_id: "test", user_id: "test"))
     }
 }
