@@ -1,5 +1,5 @@
 //
-//  createRoomView.swift
+//  joinRoomView.swift
 //  covid-game
 //
 //  Created by ayana.kuno on 2021/05/04.
@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct createRoomView: View {
-    @State private var showCopyAlert = false
+struct joinRoomView: View {
+    @State private var showJoinAlert = false
     @State private var startFlag = false
-
+    @State private var roomId: String = ""
+    
     var body: some View {
         ZStack {
             Image("background-room")
@@ -19,25 +20,24 @@ struct createRoomView: View {
                 .frame(width: 400, height: 440, alignment: .center)
             VStack {
                 ZStack {
-                    // バックエンドからはroom_idとuser_id送られてくる
-                    Image("room-id")
+                    Image("input-room-id")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 350, height: 200, alignment: .center)
-                    Text("ababa")
-                        .frame(width: 200, height: 100, alignment: .bottom)
+                    TextField("ルームID", text: $roomId)
+                        .frame(width: 200, height: 100, alignment: .center)
                 }
                 Button(action: {
-                    self.showCopyAlert = true
-                    UIPasteboard.general.string = "ababa"
+                    self.showJoinAlert = true
+                    // 入室する
                 }) {
-                Image("copy")
+                Image("join")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250, height: 80, alignment: .center)
                 }
-                .alert(isPresented: $showCopyAlert) {
-                    Alert(title: Text("コピーしました！"))
+                .alert(isPresented: $showJoinAlert) {
+                    Alert(title: Text("入室しました！"))
                 }
                 if startFlag {
                     Button(action: {
@@ -59,8 +59,8 @@ struct createRoomView: View {
     }
 }
 
-struct createRoomView_Previews: PreviewProvider {
+struct joinRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        createRoomView()
+        joinRoomView()
     }
 }

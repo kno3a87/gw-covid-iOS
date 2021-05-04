@@ -17,6 +17,7 @@
 		55A6A3D3263FE25D00129EBB /* gameData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A3D2263FE25D00129EBB /* gameData.swift */; };
 		55A6A408264149E800129EBB /* selectRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A407264149E500129EBB /* selectRoomView.swift */; };
 		55A6A410264152DB00129EBB /* createRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A40F264152DB00129EBB /* createRoomView.swift */; };
+		55A6A41526416C7900129EBB /* joinRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A41426416C7900129EBB /* joinRoomView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		55A6A3D2263FE25D00129EBB /* gameData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = gameData.swift; sourceTree = "<group>"; };
 		55A6A407264149E500129EBB /* selectRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = selectRoomView.swift; sourceTree = "<group>"; };
 		55A6A40F264152DB00129EBB /* createRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createRoomView.swift; sourceTree = "<group>"; };
+		55A6A41426416C7900129EBB /* joinRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = joinRoomView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				55A6A381263F912600129EBB /* covid_gameApp.swift */,
 				55A6A407264149E500129EBB /* selectRoomView.swift */,
 				55A6A40F264152DB00129EBB /* createRoomView.swift */,
+				55A6A41426416C7900129EBB /* joinRoomView.swift */,
 				55A6A3AF263F930100129EBB /* avoid-yuriko */,
 				55A6A385263F912C00129EBB /* Assets.xcassets */,
 				55A6A38A263F912C00129EBB /* Info.plist */,
@@ -283,6 +286,7 @@
 				55A6A382263F912600129EBB /* covid_gameApp.swift in Sources */,
 				55A6A3D3263FE25D00129EBB /* gameData.swift in Sources */,
 				55A6A3C8263FBB1900129EBB /* gameViewModel.swift in Sources */,
+				55A6A41526416C7900129EBB /* joinRoomView.swift in Sources */,
 				55A6A408264149E800129EBB /* selectRoomView.swift in Sources */,
 				55A6A410264152DB00129EBB /* createRoomView.swift in Sources */,
 			);
