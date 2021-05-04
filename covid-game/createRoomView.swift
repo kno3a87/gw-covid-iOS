@@ -70,7 +70,6 @@ class RoomLoader: ObservableObject {
     func call() {
         print("Heroku呼び出し！")
         let url = URL(string: "https://gw-covid-server.herokuapp.com/room")!
-        
         var request = URLRequest(url: url)
         // POSTを指定
         request.httpMethod = "POST"
@@ -79,29 +78,20 @@ class RoomLoader: ObservableObject {
         let session = URLSession.shared
         session.dataTask(with: request) { (data, response, error) in
             if error == nil, let data = data, let response = response as? HTTPURLResponse {
-                // HTTPヘッダの取得
-                print("Content-Type: \(response.allHeaderFields["Content-Type"] ?? "")")
                 // HTTPステータスコード
                 print("statusCode: \(response.statusCode)")
+                // 送られてきたdata
                 print(String(data: data, encoding: .utf8) ?? "")
+                // JSONからUserに
+                let decoder = JSONDecoder()
+                guard let user = try? decoder.decode(User.self, from: data) else {
+                    print("Json decode エラー")
+                    return
+                }
+                print(user)
             }
         }.resume()
         
-        
-//        URLSession.shared.dataTask(with: url) { data, response, error in
-//            if let data = data {
-//                let decoder = JSONDecoder()
-//                guard let decodedData = try? decoder.decode(User.self, from: data) else {
-//                    print("Json decode エラー")
-//                    print(data)
-//                    print(String(bytes: data, encoding: .utf8)!)
-//                    return
-//                }
-//                print(decodedData)
-//            } else {
-//                print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
-//            }
-//        }.resume()
     }
 }
 
