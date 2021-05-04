@@ -31,7 +31,7 @@ struct createRoomView: View {
                 }
                 Button(action: {
                     self.showCopyAlert = true
-                    UIPasteboard.general.string = "ababa"
+                    UIPasteboard.general.string = user.room_id
                 }) {
                 Image("copy")
                     .resizable()
