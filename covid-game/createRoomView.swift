@@ -61,11 +61,8 @@ struct createRoomView: View {
 }
 
 class RoomLoader: ObservableObject {
-    @Published private(set) var user = [User]()
-    @Published private(set) var err: Error? = nil
-    @Published private(set) var loading: Bool = true
-    
     private var cancellables = Set<AnyCancellable>()
+    @Published private(set) var user = [User]()
     
     func call() {
         print("Heroku呼び出し！")
@@ -82,13 +79,10 @@ class RoomLoader: ObservableObject {
                 print("statusCode: \(response.statusCode)")
                 // 送られてきたdata
                 print(String(data: data, encoding: .utf8) ?? "")
-                // JSONからUserに
-                let decoder = JSONDecoder()
-                guard let user = try? decoder.decode(User.self, from: data) else {
-                    print("Json decode エラー")
-                    return
-                }
-                print(user)
+                // JSONからDictionaryへ変換
+                let dic = try! JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String: String]
+                print("room_id: \(dic["room_id"]!)")
+                print("user_id: \(dic["user_id"]!)")
             }
         }.resume()
         
