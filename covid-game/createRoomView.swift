@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 struct createRoomView: View {
     @State private var showCopyAlert = false
@@ -56,6 +57,66 @@ struct createRoomView: View {
                 }
             }
         }
+    }
+}
+
+class RoomLoader: ObservableObject {
+    @Published private(set) var user = [User]()
+    @Published private(set) var err: Error? = nil
+    @Published private(set) var loading: Bool = true
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    func call() {
+        print("Heroku呼び出し！")
+        let url = URL(string: "https://gw-covid-server.herokuapp.com/room")!
+//        var urlRequest = URLRequest(url: url)
+        // TODO: http methodにGETを指定
+//        urlRequest.httpMethod = "POST"
+        // TODO: headerに"Accept: application/vnd.github.v3+json"を指定
+//        urlRequest.allHTTPHeaderFields = []
+        
+//        let roomPublisher = URLSession.shared.dataTaskPublisher(for: url)
+//            .tryMap() { element -> Data in
+//                guard let httpResponse = element.response as? HTTPURLResponse,
+//                    httpResponse.statusCode == 200 else {
+//                        throw URLError(.badServerResponse)
+//                    }
+//                return element.data
+//                }
+//            .decode(type: [User].self, decoder: JSONDecoder())
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            if let data = data {
+                let decoder = JSONDecoder()
+                guard let decodedData = try? decoder.decode(User.self, from: data) else {
+                    print("Json decode エラー")
+                    print(data)
+//                    print(response)
+                    print(String(bytes: data, encoding: .utf8)!)
+                    return
+                }
+                print(decodedData)
+            } else {
+                print("Fetch failed: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }.resume()
+
+//        roomPublisher
+//            // ちゃんとmainスレッドで受け取るよって指定してあげないとエラー
+//            .receive(on: DispatchQueue.main)
+//            .sink(receiveCompletion: { [weak self] completion in
+//                switch completion {
+//                case .failure(let error):
+//                    self?.err = error
+//                    print("Error: \(error)")
+//                case .finished: print("Finished")
+//                }
+//                self?.loading = false
+//            }, receiveValue: { [weak self] user in
+//                self?.user = user
+//            }
+//            ).store(in: &cancellables)
     }
 }
 

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct selectRoomView: View {
+    @ObservedObject var roomLoader = RoomLoader()
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -23,16 +25,18 @@ struct selectRoomView: View {
                             .scaledToFit()
                             .frame(width: 300, height: 100, alignment: .center)
                     }
-                    Button(action: {
-                     
-                    }) {
-                    Image("join-room")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 100, alignment: .center)
+                    // 画面遷移
+                    NavigationLink(destination: joinRoomView()) {
+                        Image("join-room")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 300, height: 100, alignment: .center)
                     }
                 }
             }
+        }
+        .onAppear {
+            roomLoader.call()
         }
     }
 }
