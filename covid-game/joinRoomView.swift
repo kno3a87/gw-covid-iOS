@@ -35,6 +35,7 @@ struct joinRoomView: View {
                     print("user_idは", roomLoader.guestUser.user_id)
                     // 入室する
                     roomLoader.joinCall(roomId: roomId)
+                    roomLoader.joinWebSocketCall(roomId: roomId)
                 }) {
                 Image("join")
                     .resizable()
@@ -101,6 +102,41 @@ class joinRoomLoader: ObservableObject {
                 }
             }
         }.resume()
+    }
+    
+    func joinWebSocketCall(roomId: String) {
+        print("ウェブソケットに入るよ！")
+        let wsUrl = "ws://gw-covid-server.herokuapp.com/ws/room/" + roomId + "?user_id=" + guestUser.user_id
+        let url = URL(string: wsUrl)!
+        
+        let session = URLSession.shared
+        // ws接続
+        let webSocoket = session.webSocketTask(with: url)
+        webSocoket.resume()
+        
+        self.readMessage(webSocoket: webSocoket, url: url)
+    }
+    
+    func readMessage(webSocoket: URLSessionWebSocketTask, url: URL)  {
+        print("メッセージ受け取り")
+        webSocoket
+            .receive { result in
+                switch result {
+                  case .success(let message):
+                    switch message {
+                      case .string(let text):
+                        print("Received! text: \(text)")
+                      case .data(let data):
+                        print("Received! binary: \(data)")
+                      @unknown default:
+                        fatalError()
+                    }
+                  case .failure(let error):
+                    print("Failed! error: \(error)")
+                }
+                // 自分をラップすることで何回もメッセージ受信できる
+                self.readMessage(webSocoket: webSocoket, url: url)
+            }
     }
 }
 

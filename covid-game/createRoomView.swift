@@ -104,12 +104,38 @@ class createRoomLoader: ObservableObject {
     
     func joinWebSocketCall() {
         print("ウェブソケットに入るよ！")
-        let wsUrl = "ws://gw-covid-server.herokuapp.com/ws/room/" + hostUser.room_id + "?user_id=" + hostUser.user_id
+        // wsじゃなくてwssじゃないとセキュリティで怒られる
+        let wsUrl = "wss://gw-covid-server.herokuapp.com/ws/room/" + hostUser.room_id + "?user_id=" + hostUser.user_id
         let url = URL(string: wsUrl)!
         
         let session = URLSession.shared
-        session.webSocketTask(with: url)
-            .resume()
+        // ws接続
+        let webSocoket = session.webSocketTask(with: url)
+        webSocoket.resume()
+        
+        self.readMessage(webSocoket: webSocoket, url: url)
+    }
+    
+    func readMessage(webSocoket: URLSessionWebSocketTask, url: URL)  {
+        print("メッセージ受け取り")
+        webSocoket
+            .receive { result in
+                switch result {
+                  case .success(let message):
+                    switch message {
+                      case .string(let text):
+                        print("Received! text: \(text)")
+                      case .data(let data):
+                        print("Received! binary: \(data)")
+                      @unknown default:
+                        fatalError()
+                    }
+                  case .failure(let error):
+                    print("Failed! error: \(error)")
+                }
+                // 自分をラップすることで何回もメッセージ受信できる
+                self.readMessage(webSocoket: webSocoket, url: url)
+            }
     }
 }
 
