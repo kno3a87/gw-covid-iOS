@@ -96,9 +96,20 @@ class createRoomLoader: ObservableObject {
                 DispatchQueue.main.sync {
                     self.hostUser = user
                 }
+                self.joinWebSocketCall()
             }
         }
         .resume()
+    }
+    
+    func joinWebSocketCall() {
+        print("ウェブソケットに入るよ！")
+        let wsUrl = "ws://gw-covid-server.herokuapp.com/ws/room/" + hostUser.room_id + "?user_id=" + hostUser.user_id
+        let url = URL(string: wsUrl)!
+        
+        let session = URLSession.shared
+        session.webSocketTask(with: url)
+            .resume()
     }
 }
 
