@@ -42,15 +42,14 @@ struct createRoomView: View {
                 .alert(isPresented: $showCopyAlert) {
                     Alert(title: Text("コピーしました！"))
                 }
-                if startFlag {
-                    Button(action: {
-                        // avoid-yurikoのゲーム画面に遷移
-                    }) {
-                    Image("gamestart-active")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 250, height: 80, alignment: .center)
-                    }} else {
+                if roomLoader.game.startFlag {
+                    NavigationLink(destination: GameView()) {
+                        Image("gamestart-active")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 250, height: 80, alignment: .center)
+                    }
+                } else {
                     // 人数揃うまでボタン押せない
                     Image("gamestart-non-active")
                         .resizable()
@@ -68,8 +67,11 @@ struct createRoomView: View {
 class createRoomLoader: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     // 初期化必要だから適当にぶっこみ！
-    @Published private(set) var hostUser = HostUser(room_id: "", user_id: "test")
-    @Published private(set) var guestUser = GuestUser(user_id: "test")
+    @Published private(set) var hostUser = HostUser(room_id: "", user_id: "")
+    @Published private(set) var guestUser = GuestUser(user_id: "")
+    @Published private(set) var message = Message(event: "", room_id: "", user_id: "", details: "")
+    @Published private(set) var details = Details(player_count: 0)
+    @Published private(set) var game = Game(startFlag: false)
     
     func createCall() {
         print("ルーム作るよ！")
@@ -117,14 +119,38 @@ class createRoomLoader: ObservableObject {
     }
     
     func readMessage(webSocoket: URLSessionWebSocketTask, url: URL)  {
-        print("メッセージ受け取り")
+        print("createメッセージ受け取り")
         webSocoket
-            .receive { result in
+            .receive { [self] result in
                 switch result {
                   case .success(let message):
                     switch message {
                       case .string(let text):
-                        print("Received! text: \(text)")
+                        let json = text.data(using: .utf8)!
+                        let decoder = JSONDecoder()
+                        guard let message = try? decoder.decode(Message.self, from: json) else {
+                            print("Json decode エラー")
+                            return
+                        }
+                        DispatchQueue.main.sync {
+                            self.message = message
+                        }
+                        let detailsJson = message.details.data(using: .utf8)!
+                        let detailsDecoder = JSONDecoder()
+                        guard let details = try? detailsDecoder.decode(Details.self, from: detailsJson) else {
+                            print("Json decode エラー")
+                            return
+                        }
+                        DispatchQueue.main.sync {
+                            self.details = details
+                        }
+                        print("参加人数：", details.player_count)
+                        if details.player_count == 4 {
+                            DispatchQueue.main.sync {
+                                self.game.startFlag = true
+                            }
+                        }
+                        
                       case .data(let data):
                         print("Received! binary: \(data)")
                       @unknown default:

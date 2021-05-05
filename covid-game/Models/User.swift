@@ -13,3 +13,18 @@ struct HostUser: Codable {
 struct GuestUser: Codable {
     var user_id: String
 }
+
+struct Message: Codable {
+    var event: String
+    var room_id: String
+    var user_id: String
+    var details: String
+}
+
+struct Details: Codable {
+    var player_count: Int
+}
+
+struct Game: Codable {
+    var startFlag: Bool
+}
