@@ -68,7 +68,7 @@ struct createRoomView: View {
 class createRoomLoader: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     // 初期化必要だから適当にぶっこみ！
-    @Published private(set) var hostUser = HostUser(room_id: "test", user_id: "test")
+    @Published private(set) var hostUser = HostUser(room_id: "", user_id: "test")
     @Published private(set) var guestUser = GuestUser(user_id: "test")
     
     func createCall() {
@@ -92,10 +92,13 @@ class createRoomLoader: ObservableObject {
                 }
 //                print(user.room_id)
 //                print(user.user_id)
-                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる（無視）
-                self.hostUser = user
+                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる
+                DispatchQueue.main.sync {
+                    self.hostUser = user
+                }
             }
-        }.resume()
+        }
+        .resume()
     }
 }
 

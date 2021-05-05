@@ -61,9 +61,6 @@ struct joinRoomView: View {
                 }
             }
         }
-//        .onAppear {
-//            roomLoader.joinCall()
-//        }
     }
 }
 
@@ -98,8 +95,10 @@ class joinRoomLoader: ObservableObject {
                     return
                 }
                 print(user.user_id)
-                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる（無視）
-                self.guestUser = user
+                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる
+                DispatchQueue.main.sync {
+                    self.guestUser = user
+                }
             }
         }.resume()
     }
