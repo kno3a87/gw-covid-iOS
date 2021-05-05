@@ -9,7 +9,7 @@ import Foundation
 
 struct GameData: Codable {
     var start: Bool = true
-    var time: Int = 10
+    var time: Int = 30
     var point: Int = 0
     // flagがtrueだと罰
     var flag: Bool = false
