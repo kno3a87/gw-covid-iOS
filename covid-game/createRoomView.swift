@@ -11,7 +11,8 @@ import Combine
 struct createRoomView: View {
     @State private var showCopyAlert = false
     @State private var startFlag = false
-    let user: User
+    
+    @ObservedObject var roomLoader = createRoomLoader()
 
     var body: some View {
         ZStack {
@@ -26,12 +27,12 @@ struct createRoomView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 350, height: 200, alignment: .center)
-                    Text(verbatim: user.room_id)
+                    Text(verbatim: roomLoader.hostUser.room_id)
                         .frame(width: 200, height: 100, alignment: .bottom)
                 }
                 Button(action: {
                     self.showCopyAlert = true
-                    UIPasteboard.general.string = user.room_id
+                    UIPasteboard.general.string = roomLoader.hostUser.room_id
                 }) {
                 Image("copy")
                     .resizable()
@@ -58,11 +59,49 @@ struct createRoomView: View {
                 }
             }
         }
+        .onAppear {
+            roomLoader.createCall()
+        }
     }
 }
 
+class createRoomLoader: ObservableObject {
+    private var cancellables = Set<AnyCancellable>()
+    // 初期化必要だから適当にぶっこみ！
+    @Published private(set) var hostUser = HostUser(room_id: "test", user_id: "test")
+    @Published private(set) var guestUser = GuestUser(user_id: "test")
+    
+    func createCall() {
+        print("ルーム作るよ！")
+        let url = URL(string: "https://gw-covid-server.herokuapp.com/room")!
+        var request = URLRequest(url: url)
+        // POSTを指定
+        request.httpMethod = "POST"
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                // HTTPステータスコード
+                print("statusCode: \(response.statusCode)")
+                // 送られてきたdata
+                print(String(data: data, encoding: .utf8) ?? "")
+                // JSONからUserに
+                let decoder = JSONDecoder()
+                guard let user = try? decoder.decode(HostUser.self, from: data) else {
+                    print("Json decode エラー")
+                    return
+                }
+//                print(user.room_id)
+//                print(user.user_id)
+                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる（無視）
+                self.hostUser = user
+            }
+        }.resume()
+    }
+}
+
+
 struct createRoomView_Previews: PreviewProvider {
     static var previews: some View {
-        createRoomView(user: User(room_id: "test", user_id: "test"))
+        createRoomView()
     }
 }

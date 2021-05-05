@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 
 struct joinRoomView: View {
     @State private var showJoinAlert = false
     @State private var startFlag = false
     @State private var roomId: String = ""
+    
+    @ObservedObject var roomLoader = joinRoomLoader()
     
     var body: some View {
         ZStack {
@@ -29,7 +32,9 @@ struct joinRoomView: View {
                 }
                 Button(action: {
                     self.showJoinAlert = true
+                    print("user_idは", roomLoader.guestUser.user_id)
                     // 入室する
+                    roomLoader.joinCall(roomId: roomId)
                 }) {
                 Image("join")
                     .resizable()
@@ -56,6 +61,47 @@ struct joinRoomView: View {
                 }
             }
         }
+//        .onAppear {
+//            roomLoader.joinCall()
+//        }
+    }
+}
+
+class joinRoomLoader: ObservableObject {
+    private var cancellables = Set<AnyCancellable>()
+    // 初期化必要だから適当にぶっこみ！
+    @Published private(set) var guestUser = GuestUser(user_id: "test")
+    
+    func joinCall(roomId: String) {
+        print("ルーム参加するよ！")
+        let url = URL(string: "https://gw-covid-server.herokuapp.com/room/join")!
+        var request = URLRequest(url: url)
+        // POSTを指定
+        request.httpMethod = "POST"
+        // Body設定
+        print(roomId)
+        let room: String = "{\"room_id\":\"" + roomId + "\"}"
+        request.httpBody = room.data(using: .utf8)
+        // header設定（これしないとエラーになる）
+        request.allHTTPHeaderFields = ["Content-Type": "application/json"]
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if error == nil, let data = data, let response = response as? HTTPURLResponse {
+                // HTTPステータスコード
+                print("statusCode: \(response.statusCode)")
+                // 送られてきたdata
+                print(String(data: data, encoding: .utf8) ?? "")
+                // JSONからUserに
+                let decoder = JSONDecoder()
+                guard let user = try? decoder.decode(GuestUser.self, from: data) else {
+                    print("Json decode エラー")
+                    return
+                }
+                print(user.user_id)
+                // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる（無視）
+                self.guestUser = user
+            }
+        }.resume()
     }
 }
 
