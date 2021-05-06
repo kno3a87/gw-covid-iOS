@@ -31,6 +31,7 @@ struct joinRoomView: View {
                         .frame(width: 200, height: 100, alignment: .center)
                 }
                 Button(action: {
+                    UIApplication.shared.closeKeyboard()
                     self.showJoinAlert = true
                     // 入室する
                     roomLoader.joinCall(roomId: roomId)
@@ -166,5 +167,17 @@ class joinRoomLoader: ObservableObject {
 struct joinRoomView_Previews: PreviewProvider {
     static var previews: some View {
         joinRoomView()
+    }
+}
+
+
+extension UIApplication {
+    func closeKeyboard() {
+        sendAction(
+            #selector(UIResponder.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
     }
 }
