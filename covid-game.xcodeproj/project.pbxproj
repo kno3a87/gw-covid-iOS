@@ -19,6 +19,7 @@
 		55A6A410264152DB00129EBB /* createRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A40F264152DB00129EBB /* createRoomView.swift */; };
 		55A6A41526416C7900129EBB /* joinRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A41426416C7900129EBB /* joinRoomView.swift */; };
 		55A6A472264198D900129EBB /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6A471264198D900129EBB /* User.swift */; };
+		55AB05882644424600D6D749 /* webSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55AB05872644424600D6D749 /* webSocket.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		55A6A40F264152DB00129EBB /* createRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createRoomView.swift; sourceTree = "<group>"; };
 		55A6A41426416C7900129EBB /* joinRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = joinRoomView.swift; sourceTree = "<group>"; };
 		55A6A471264198D900129EBB /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		55AB05872644424600D6D749 /* webSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = webSocket.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				55A6A407264149E500129EBB /* selectRoomView.swift */,
 				55A6A40F264152DB00129EBB /* createRoomView.swift */,
 				55A6A41426416C7900129EBB /* joinRoomView.swift */,
+				55AB05872644424600D6D749 /* webSocket.swift */,
 				55A6A470264198CA00129EBB /* Models */,
 				55A6A3AF263F930100129EBB /* avoid-yuriko */,
 				55A6A385263F912C00129EBB /* Assets.xcassets */,
@@ -301,6 +304,7 @@
 				55A6A408264149E800129EBB /* selectRoomView.swift in Sources */,
 				55A6A410264152DB00129EBB /* createRoomView.swift in Sources */,
 				55A6A472264198D900129EBB /* User.swift in Sources */,
+				55AB05882644424600D6D749 /* webSocket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
