@@ -45,7 +45,7 @@ struct joinRoomView: View {
                     Alert(title: Text("入室しました！"))
                 }
                 if roomLoader.game.startFlag {
-                    NavigationLink(destination: GameView(roomLoader: roomLoader)) {
+                    NavigationLink(destination: GameView(roomId: roomId)) {
                         Image("gamestart-active")
                             .resizable()
                             .scaledToFit()

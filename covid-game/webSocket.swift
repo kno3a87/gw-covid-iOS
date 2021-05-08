@@ -141,15 +141,14 @@ class RoomLoader: ObservableObject {
             }
     }
     
-    func sendMessage()  {
+    func sendMessage(roomId: String)  {
         print("GameStart:AvoidYurikoメッセージ送信")
         let eventMsg = "{\"event\": "
         let gameStartMsg = "\"GameStart:AvoidYuriko\""
-        let roomIdMsg = "\"room_id\": \""+String(self.hostUser.room_id)+"\""
+        let roomIdMsg = "\"room_id\": \""+roomId+"\""
         let hostUserIdMsg = "\"user_id\": \"\""
         let detailsMsg = "\"details\": \"\"}"
         let msg = URLSessionWebSocketTask.Message.string(eventMsg+gameStartMsg+","+roomIdMsg+","+hostUserIdMsg+","+detailsMsg)
-        print(roomIdMsg)
         self.webSocket!.send(msg) { error in
           if let error = error {
             print(error)  // some error handling

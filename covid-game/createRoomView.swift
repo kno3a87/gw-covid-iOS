@@ -43,7 +43,7 @@ struct createRoomView: View {
                     Alert(title: Text("コピーしました！"))
                 }
                 if roomLoader.game.startFlag {
-                    NavigationLink(destination: GameView(roomLoader: roomLoader)) {
+                    NavigationLink(destination: GameView(roomId: roomLoader.hostUser.room_id)) {
                         Image("gamestart-active")
                             .resizable()
                             .scaledToFit()

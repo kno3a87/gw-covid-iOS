@@ -9,7 +9,9 @@ import SwiftUI
 
 struct GameView: View {
     @ObservedObject var viewModel = GameViewModel()
-    @ObservedObject var roomLoader: RoomLoader
+//    @ObservedObject var roomLoader: RoomLoader
+    @ObservedObject var roomLoader = RoomLoader()
+    @State var roomId: String
     @State var gameData = GameData()
     @State var timer: Timer?
        
@@ -17,7 +19,8 @@ struct GameView: View {
         ZStack(alignment: .center) {
             if gameData.start {
                 Button(action: {
-                    roomLoader.sendMessage()
+                    print("ルームIDは", roomId)
+                    roomLoader.sendMessage(roomId: roomId)
                     gameData.start = false
                     self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true){_ in
                         gameData.time -= 1
@@ -113,6 +116,6 @@ struct GameView: View {
 
 struct GameView_Previews: PreviewProvider {
     static var previews: some View {
-        GameView(roomLoader: RoomLoader())
+        GameView(roomId: "")
     }
 }
