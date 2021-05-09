@@ -10,7 +10,7 @@ import Combine
 
 class RoomLoader: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
-    private var webSocket: URLSessionWebSocketTask?
+//    private var webSocket: URLSessionWebSocketTask?
     
     // 初期化必要だから適当にぶっこみ！
     @Published private(set) var hostUser = HostUser(room_id: "", user_id: "")
@@ -18,6 +18,7 @@ class RoomLoader: ObservableObject {
     @Published private(set) var message = Message(event: "", room_id: "", user_id: "", details: "")
     @Published private(set) var details = Details(player_count: 0)
     @Published private(set) var game = Game(startFlag: false)
+    @Published private(set) var webSocket:URLSessionWebSocketTask? = nil
     
     
     func createCall() {
@@ -43,7 +44,7 @@ class RoomLoader: ObservableObject {
                 DispatchQueue.main.sync {
                     self.hostUser = user
                 }
-                self.joinWebSocketCall(roomId: self.hostUser.room_id, user_id: self.hostUser.user_id)
+                self.webSocket = self.joinWebSocketCall(roomId: self.hostUser.room_id, user_id: self.hostUser.user_id)
             }
         }
         .resume()
@@ -77,13 +78,13 @@ class RoomLoader: ObservableObject {
                 // @Publishedなプロパティを変更するときはmainスレッドからじゃないと警告でる
                 DispatchQueue.main.sync {
                     self.guestUser = user
-                    self.joinWebSocketCall(roomId: roomId, user_id: self.guestUser.user_id)
                 }
+                self.webSocket = self.joinWebSocketCall(roomId: roomId, user_id: self.guestUser.user_id)
             }
         }.resume()
     }
     
-    func joinWebSocketCall(roomId: String, user_id: String) {
+    func joinWebSocketCall(roomId: String, user_id: String) -> URLSessionWebSocketTask {
         print("ウェブソケットに入るよ！")
         let wsUrl = "wss://gw-covid-server.herokuapp.com/ws/room/" + roomId + "?user_id=" + user_id
         let url = URL(string: wsUrl)!
@@ -94,6 +95,8 @@ class RoomLoader: ObservableObject {
         self.webSocket!.resume()
         
         self.readMessage(webSocoket: self.webSocket!, url: url)
+        
+        return self.webSocket!
     }
     
     func readMessage(webSocoket: URLSessionWebSocketTask, url: URL)  {
@@ -141,7 +144,7 @@ class RoomLoader: ObservableObject {
             }
     }
     
-    func sendMessage(roomId: String)  {
+    func sendMessage(roomId: String, webSocket: URLSessionWebSocketTask)  {
         print("GameStart:AvoidYurikoメッセージ送信")
         let eventMsg = "{\"event\": "
         let gameStartMsg = "\"GameStart:AvoidYuriko\""
@@ -149,7 +152,8 @@ class RoomLoader: ObservableObject {
         let hostUserIdMsg = "\"user_id\": \"\""
         let detailsMsg = "\"details\": \"\"}"
         let msg = URLSessionWebSocketTask.Message.string(eventMsg+gameStartMsg+","+roomIdMsg+","+hostUserIdMsg+","+detailsMsg)
-        self.webSocket!.send(msg) { error in
+        webSocket.send(msg) { error in
+//        self.webSocket!.send(msg) { error in
           if let error = error {
             print(error)  // some error handling
           }

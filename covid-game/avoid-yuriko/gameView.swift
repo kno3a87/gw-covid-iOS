@@ -14,13 +14,14 @@ struct GameView: View {
     @State var roomId: String
     @State var gameData = GameData()
     @State var timer: Timer?
+    @State var webSocket: URLSessionWebSocketTask?
        
     var body: some View {
         ZStack(alignment: .center) {
             if gameData.start {
                 Button(action: {
                     print("ルームIDは", roomId)
-                    roomLoader.sendMessage(roomId: roomId)
+                    roomLoader.sendMessage(roomId: roomId, webSocket: webSocket!)
                     gameData.start = false
                     self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true){_ in
                         gameData.time -= 1
